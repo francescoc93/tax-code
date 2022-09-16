@@ -3,7 +3,6 @@ package com.example.taxcode.application.controller;
 import com.example.taxcode.application.exception.CityCodeNotFoundException;
 import com.example.taxcode.application.exception.TaxCodeNotValidException;
 import lombok.Builder;
-import lombok.RequiredArgsConstructor;
 import lombok.Singular;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
