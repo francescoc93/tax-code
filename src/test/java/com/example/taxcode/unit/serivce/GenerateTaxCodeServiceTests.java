@@ -1,12 +1,12 @@
 package com.example.taxcode.unit.serivce;
 
-import com.example.taxcode.application.entity.PersonEntity;
+import com.example.taxcode.application.entity.PeopleEntity;
 import com.example.taxcode.application.exception.CityCodeNotFoundException;
 import com.example.taxcode.application.dto.DateBirthCode;
 import com.example.taxcode.application.factory.dto.Gender;
-import com.example.taxcode.application.dto.Person;
+import com.example.taxcode.application.dto.People;
 import com.example.taxcode.application.factory.dto.TaxCode;
-import com.example.taxcode.application.repository.PersonRepository;
+import com.example.taxcode.application.repository.PeopleRepository;
 import com.example.taxcode.application.service.impl.GenerateTaxCodeServiceImpl;
 import com.example.taxcode.application.taxcode.generator.TaxCodeGenerator;
 import org.junit.jupiter.api.BeforeAll;
@@ -27,9 +27,9 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class GenerateTaxCodeServiceTests {
-    private static Person person;
-    private static Person personNormalized;
-    private static PersonEntity personEntity;
+    private static People people;
+    private static People peopleNormalized;
+    private static PeopleEntity peopleEntity;
     private static TaxCode taxCode;
     private static String taxCodeStringFormat;
     @InjectMocks
@@ -37,7 +37,7 @@ class GenerateTaxCodeServiceTests {
     @Mock
     private TaxCodeGenerator taxCodeGenerator;
     @Mock
-    PersonRepository personRepository;
+    PeopleRepository peopleRepository;
 
 
     @BeforeAll
@@ -46,7 +46,7 @@ class GenerateTaxCodeServiceTests {
         var nameNormalized = "MARIO";
         var surname = "Rossi";
         var surnameNormalized = "ROSSI";
-        var gender = Gender.MALE;
+        var gender = Gender.MAN;
         var placeOfBirth = "  Ascoli  Piceno  ";
         var placeOfBirthNormalized = "ASCOLI PICENO";
         var dateOfBirth = LocalDate.of(1990,Month.JANUARY,10);
@@ -58,9 +58,9 @@ class GenerateTaxCodeServiceTests {
 
         taxCodeStringFormat = surnameCode+nameCode+dateBirthCode.toString()+cityCode+validationCharacter;
 
-        person = new Person(name,surname,gender,placeOfBirth,dateOfBirth);
-        personNormalized = new Person(nameNormalized,surnameNormalized,gender,placeOfBirthNormalized,dateOfBirth);
-        personEntity = PersonEntity.builder()
+        people = new People(name,surname,gender,placeOfBirth,dateOfBirth);
+        peopleNormalized = new People(nameNormalized,surnameNormalized,gender,placeOfBirthNormalized,dateOfBirth);
+        peopleEntity = PeopleEntity.builder()
                 .nameTaxCode(nameCode)
                 .cityTaxCode(cityCode)
                 .surnameTaxCode(surnameCode)
@@ -84,97 +84,97 @@ class GenerateTaxCodeServiceTests {
     @DisplayName("Find tax code on database")
     @Test
     void findTaxCodeOnDatabase() throws CityCodeNotFoundException {
-        when(personRepository.findTaxCodeByPersonInformation(personNormalized.getName(),
-                personNormalized.getSurname(),
-                personNormalized.getGender(),
-                personNormalized.getPlaceOfBirth(),
-                personNormalized.getDateOfBirth())).
-                thenReturn(Optional.of(personEntity));
+        when(peopleRepository.findTaxCodeByPeopleInformation(peopleNormalized.getName(),
+                peopleNormalized.getSurname(),
+                peopleNormalized.getGender(),
+                peopleNormalized.getPlaceOfBirth(),
+                peopleNormalized.getDateOfBirth())).
+                thenReturn(Optional.of(peopleEntity));
 
-        var taxCodeResponse = generateTaxCodeService.retrieveFromDatabaseOrGenerateTaxCode(person);
+        var taxCodeResponse = generateTaxCodeService.retrieveFromDatabaseOrGenerateTaxCode(people);
 
         assertEquals(taxCodeStringFormat,taxCodeResponse.getTaxCode());
-        verify(taxCodeGenerator,never()).generateTaxCode(personNormalized);
-        verify(personRepository,never()).save(personEntity);
-        verify(personRepository,times(1)).findTaxCodeByPersonInformation(personNormalized.getName(),
-                personNormalized.getSurname(),
-                personNormalized.getGender(),
-                personNormalized.getPlaceOfBirth(),
-                personNormalized.getDateOfBirth());
+        verify(taxCodeGenerator,never()).generateTaxCode(peopleNormalized);
+        verify(peopleRepository,never()).save(peopleEntity);
+        verify(peopleRepository,times(1)).findTaxCodeByPeopleInformation(peopleNormalized.getName(),
+                peopleNormalized.getSurname(),
+                peopleNormalized.getGender(),
+                peopleNormalized.getPlaceOfBirth(),
+                peopleNormalized.getDateOfBirth());
     }
 
     @DisplayName("Generate tax code")
     @Test
     void generateTaxCode() throws CityCodeNotFoundException {
-        when(personRepository.findTaxCodeByPersonInformation(personNormalized.getName(),
-                personNormalized.getSurname(),
-                personNormalized.getGender(),
-                personNormalized.getPlaceOfBirth(),
-                personNormalized.getDateOfBirth())).
+        when(peopleRepository.findTaxCodeByPeopleInformation(peopleNormalized.getName(),
+                peopleNormalized.getSurname(),
+                peopleNormalized.getGender(),
+                peopleNormalized.getPlaceOfBirth(),
+                peopleNormalized.getDateOfBirth())).
                 thenReturn(Optional.empty());
 
         when(taxCodeGenerator.generateTaxCode(any())).thenReturn(taxCode);
 
-        var taxCodeResponse = generateTaxCodeService.retrieveFromDatabaseOrGenerateTaxCode(person);
+        var taxCodeResponse = generateTaxCodeService.retrieveFromDatabaseOrGenerateTaxCode(people);
 
         assertEquals(taxCodeStringFormat,taxCodeResponse.getTaxCode());
         verify(taxCodeGenerator,times(1)).generateTaxCode(any());
-        verify(personRepository,times(1)).save(any());
-        verify(personRepository,times(1)).findTaxCodeByPersonInformation(personNormalized.getName(),
-                personNormalized.getSurname(),
-                personNormalized.getGender(),
-                personNormalized.getPlaceOfBirth(),
-                personNormalized.getDateOfBirth());
+        verify(peopleRepository,times(1)).save(any());
+        verify(peopleRepository,times(1)).findTaxCodeByPeopleInformation(peopleNormalized.getName(),
+                peopleNormalized.getSurname(),
+                peopleNormalized.getGender(),
+                peopleNormalized.getPlaceOfBirth(),
+                peopleNormalized.getDateOfBirth());
     }
 
     @DisplayName("Generate tax code throw IllegalArgumentException")
     @Test
     void generateTaxCodeThrowIllegalArgumentException() throws CityCodeNotFoundException {
-        when(personRepository.findTaxCodeByPersonInformation(personNormalized.getName(),
-                personNormalized.getSurname(),
-                personNormalized.getGender(),
-                personNormalized.getPlaceOfBirth(),
-                personNormalized.getDateOfBirth())).
+        when(peopleRepository.findTaxCodeByPeopleInformation(peopleNormalized.getName(),
+                peopleNormalized.getSurname(),
+                peopleNormalized.getGender(),
+                peopleNormalized.getPlaceOfBirth(),
+                peopleNormalized.getDateOfBirth())).
                 thenReturn(Optional.empty());
 
         when(taxCodeGenerator.generateTaxCode(any())).thenThrow(IllegalArgumentException.class);
 
         assertThatThrownBy(() -> {
-            generateTaxCodeService.retrieveFromDatabaseOrGenerateTaxCode(person);
+            generateTaxCodeService.retrieveFromDatabaseOrGenerateTaxCode(people);
         }).isInstanceOf(IllegalArgumentException.class);
 
         verify(taxCodeGenerator,times(1)).generateTaxCode(any());
-        verify(personRepository,never()).save(any());
-        verify(personRepository,times(1)).findTaxCodeByPersonInformation(personNormalized.getName(),
-                personNormalized.getSurname(),
-                personNormalized.getGender(),
-                personNormalized.getPlaceOfBirth(),
-                personNormalized.getDateOfBirth());
+        verify(peopleRepository,never()).save(any());
+        verify(peopleRepository,times(1)).findTaxCodeByPeopleInformation(peopleNormalized.getName(),
+                peopleNormalized.getSurname(),
+                peopleNormalized.getGender(),
+                peopleNormalized.getPlaceOfBirth(),
+                peopleNormalized.getDateOfBirth());
     }
 
     @DisplayName("Generate tax code throw CityCodeNotFoundException")
     @Test
     void generateTaxCodeThrowCityCodeNotFoundException() throws CityCodeNotFoundException {
-        when(personRepository.findTaxCodeByPersonInformation(personNormalized.getName(),
-                personNormalized.getSurname(),
-                personNormalized.getGender(),
-                personNormalized.getPlaceOfBirth(),
-                personNormalized.getDateOfBirth())).
+        when(peopleRepository.findTaxCodeByPeopleInformation(peopleNormalized.getName(),
+                peopleNormalized.getSurname(),
+                peopleNormalized.getGender(),
+                peopleNormalized.getPlaceOfBirth(),
+                peopleNormalized.getDateOfBirth())).
                 thenReturn(Optional.empty());
 
         when(taxCodeGenerator.generateTaxCode(any())).thenThrow(CityCodeNotFoundException.class);
 
         assertThatThrownBy(() -> {
-            generateTaxCodeService.retrieveFromDatabaseOrGenerateTaxCode(person);
+            generateTaxCodeService.retrieveFromDatabaseOrGenerateTaxCode(people);
         }).isInstanceOf(CityCodeNotFoundException.class);
 
         verify(taxCodeGenerator,times(1)).generateTaxCode(any());
-        verify(personRepository,never()).save(any());
-        verify(personRepository,times(1)).findTaxCodeByPersonInformation(personNormalized.getName(),
-                personNormalized.getSurname(),
-                personNormalized.getGender(),
-                personNormalized.getPlaceOfBirth(),
-                personNormalized.getDateOfBirth());
+        verify(peopleRepository,never()).save(any());
+        verify(peopleRepository,times(1)).findTaxCodeByPeopleInformation(peopleNormalized.getName(),
+                peopleNormalized.getSurname(),
+                peopleNormalized.getGender(),
+                peopleNormalized.getPlaceOfBirth(),
+                peopleNormalized.getDateOfBirth());
     }
 
 }

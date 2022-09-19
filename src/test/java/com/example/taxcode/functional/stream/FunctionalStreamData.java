@@ -1,7 +1,7 @@
 package com.example.taxcode.functional.stream;
 
 import com.example.taxcode.application.factory.dto.Gender;
-import com.example.taxcode.application.dto.Person;
+import com.example.taxcode.application.dto.People;
 import com.example.taxcode.application.factory.dto.TaxCodeDecode;
 import com.example.taxcode.application.dto.TaxCodeResponse;
 import org.junit.jupiter.params.provider.Arguments;
@@ -16,42 +16,42 @@ public class FunctionalStreamData {
     private static final String SURNAME = "Rossi";
     private static final String PLACE_OF_BIRTH = "Roma";
     private static final LocalDate DATE_OF_BIRTH = LocalDate.of(1990, Month.JULY, 12);
-    private static final Gender GENDER = Gender.MALE;
+    private static final Gender GENDER = Gender.MAN;
 
 
-    private static Stream<Person> invalidPerson() {
+    private static Stream<People> invalidPeople() {
         return Stream.of(null,
-                new Person(null, SURNAME, GENDER, PLACE_OF_BIRTH, DATE_OF_BIRTH),
-                new Person(NAME, null, GENDER, PLACE_OF_BIRTH, DATE_OF_BIRTH),
-                new Person(NAME, SURNAME, null, PLACE_OF_BIRTH, DATE_OF_BIRTH),
-                new Person(NAME, SURNAME, GENDER, null, DATE_OF_BIRTH),
-                new Person(NAME, SURNAME, GENDER, PLACE_OF_BIRTH, null),
-                new Person(null, null, null, null, null),
-                new Person(" ", SURNAME, GENDER, PLACE_OF_BIRTH, DATE_OF_BIRTH),
-                new Person(NAME, " ", GENDER, PLACE_OF_BIRTH, DATE_OF_BIRTH),
-                new Person(NAME, SURNAME, GENDER, "", DATE_OF_BIRTH),
-                new Person(" ", SURNAME, GENDER, PLACE_OF_BIRTH, DATE_OF_BIRTH),
-                new Person(NAME, " ", GENDER, PLACE_OF_BIRTH, DATE_OF_BIRTH),
-                new Person(NAME, SURNAME, GENDER, "", DATE_OF_BIRTH));
+                new People(null, SURNAME, GENDER, PLACE_OF_BIRTH, DATE_OF_BIRTH),
+                new People(NAME, null, GENDER, PLACE_OF_BIRTH, DATE_OF_BIRTH),
+                new People(NAME, SURNAME, null, PLACE_OF_BIRTH, DATE_OF_BIRTH),
+                new People(NAME, SURNAME, GENDER, null, DATE_OF_BIRTH),
+                new People(NAME, SURNAME, GENDER, PLACE_OF_BIRTH, null),
+                new People(null, null, null, null, null),
+                new People(" ", SURNAME, GENDER, PLACE_OF_BIRTH, DATE_OF_BIRTH),
+                new People(NAME, " ", GENDER, PLACE_OF_BIRTH, DATE_OF_BIRTH),
+                new People(NAME, SURNAME, GENDER, "", DATE_OF_BIRTH),
+                new People(" ", SURNAME, GENDER, PLACE_OF_BIRTH, DATE_OF_BIRTH),
+                new People(NAME, " ", GENDER, PLACE_OF_BIRTH, DATE_OF_BIRTH),
+                new People(NAME, SURNAME, GENDER, "", DATE_OF_BIRTH));
     }
 
-    private static Stream<Arguments> validPerson() {
-        var person = new Person("Mario","Rossi",Gender.MALE,"Roma",LocalDate.of(1980,Month.JULY,10));
+    private static Stream<Arguments> validPeople() {
+        var people = new People("Mario","Rossi",Gender.MAN,"Roma",LocalDate.of(1980,Month.JULY,10));
         var taxCode = new TaxCodeResponse("RSSMRA80L10H501Z");
-        var person2 = new Person("  Giovanna  "," Rossi",Gender.FEMALE,"   Ascoli   PICENO",LocalDate.of(1985,Month.JULY,17));
+        var people2 = new People("  Giovanna  "," Rossi",Gender.WOMAN,"   Ascoli   PICENO",LocalDate.of(1985,Month.JULY,17));
         var taxCode2 = new TaxCodeResponse("RSSGNN85L57A462R");
-        var person3 = new Person("Mario Giulio","Rossi Leone",Gender.MALE,"Torino",LocalDate.of(1990,Month.DECEMBER,18));
+        var people3 = new People("Mario Giulio","Rossi Leone",Gender.MAN,"Torino",LocalDate.of(1990,Month.DECEMBER,18));
         var taxCode3 = new TaxCodeResponse("RSSMGL90T18L219N");
-        var person4 = new Person("Francesca","Li",Gender.FEMALE,"Bologna",LocalDate.of(1990,Month.AUGUST,18));
+        var people4 = new People("Francesca","Li",Gender.WOMAN,"Bologna",LocalDate.of(1990,Month.AUGUST,18));
         var taxCode4 = new TaxCodeResponse("LIXFNC90M58A944F");
-        var person5 = new Person("Al","Leone",Gender.MALE,"Bologna",LocalDate.of(1990,Month.AUGUST,18));
+        var people5 = new People("Al","Leone",Gender.MAN,"Bologna",LocalDate.of(1990,Month.AUGUST,18));
         var taxCode5 = new TaxCodeResponse("LNELAX90M18A944Y");
 
-        return Stream.of(Arguments.of(person,taxCode),
-                Arguments.of(person2,taxCode2),
-                Arguments.of(person3,taxCode3),
-                Arguments.of(person4,taxCode4),
-                Arguments.of(person5,taxCode5));
+        return Stream.of(Arguments.of(people,taxCode),
+                Arguments.of(people2,taxCode2),
+                Arguments.of(people3,taxCode3),
+                Arguments.of(people4,taxCode4),
+                Arguments.of(people5,taxCode5));
     }
 
     private static Stream<String> invalidTaxCode() {
@@ -72,7 +72,7 @@ public class FunctionalStreamData {
         surname.add("ROSSI");
         surname.add("ROSSO");
         var taxCodeDecode = TaxCodeDecode.builder()
-                .gender(Gender.MALE)
+                .gender(Gender.MAN)
                 .placeOfBirth("ROMA")
                 .dateOfBirth(LocalDate.of(1980,Month.JULY,10))
                 .names(name)
@@ -81,7 +81,7 @@ public class FunctionalStreamData {
 
         var taxCode2 = "LNELAX90M18A944Y";
         var taxCodeDecode2 = TaxCodeDecode.builder()
-                .gender(Gender.MALE)
+                .gender(Gender.MAN)
                 .placeOfBirth("BOLOGNA")
                 .dateOfBirth(LocalDate.of(1990,Month.AUGUST,18))
                 .names(new ArrayList<>())
@@ -96,7 +96,7 @@ public class FunctionalStreamData {
         surname3.add("ROSSI");
         surname3.add("ROSSO");
         var taxCodeDecode3 = TaxCodeDecode.builder()
-                .gender(Gender.FEMALE)
+                .gender(Gender.WOMAN)
                 .placeOfBirth("ROMA")
                 .dateOfBirth(LocalDate.of(1980,Month.JANUARY,1))
                 .names(name3)

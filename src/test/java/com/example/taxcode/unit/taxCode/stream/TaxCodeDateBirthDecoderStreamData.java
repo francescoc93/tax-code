@@ -34,10 +34,10 @@ public class TaxCodeDateBirthDecoderStreamData {
     }
 
     private static Stream<Arguments> genderStreamData() {
-        return Stream.of(Arguments.of(new DateBirthCode("93", "C", "02"), Gender.MALE),
-                Arguments.of(new DateBirthCode("93", "C", "41"),Gender.FEMALE),
-                Arguments.of(new DateBirthCode("93", "C", "31"),Gender.MALE),
-                Arguments.of(new DateBirthCode("93", "C", "71"),Gender.FEMALE));
+        return Stream.of(Arguments.of(new DateBirthCode("93", "C", "02"), Gender.MAN),
+                Arguments.of(new DateBirthCode("93", "C", "41"),Gender.WOMAN),
+                Arguments.of(new DateBirthCode("93", "C", "31"),Gender.MAN),
+                Arguments.of(new DateBirthCode("93", "C", "71"),Gender.WOMAN));
 
     }
 

@@ -1,7 +1,7 @@
 package com.example.taxcode.application.entity;
 
 import com.example.taxcode.application.factory.dto.Gender;
-import com.example.taxcode.application.entity.pk.PersonPK;
+import com.example.taxcode.application.entity.pk.PeoplePK;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,13 +13,13 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
-@Table(name="PERSONS")
-@IdClass(PersonPK.class)
+@Table(name="PEOPLE")
+@IdClass(PeoplePK.class)
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class PersonEntity {
+public class PeopleEntity {
     @Id
     @NotBlank
     @Column(name="NAME_TAX_CODE")

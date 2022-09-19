@@ -1,6 +1,6 @@
 package com.example.taxcode.application.controller;
 
-import com.example.taxcode.application.dto.Person;
+import com.example.taxcode.application.dto.People;
 import com.example.taxcode.application.factory.dto.TaxCodeDecode;
 import com.example.taxcode.application.dto.TaxCodeResponse;
 import com.example.taxcode.application.service.DecodeTaxCodeService;
@@ -22,8 +22,8 @@ public class TaxCodeController {
     private final DecodeTaxCodeService decodeTaxCodeService;
 
     @PostMapping("/calculateTaxCode")
-    public TaxCodeResponse calculateTaxCode(@RequestBody @Valid Person person) {
-        return generateTaxCodeService.retrieveFromDatabaseOrGenerateTaxCode(person);
+    public TaxCodeResponse calculateTaxCode(@RequestBody @Valid People people) {
+        return generateTaxCodeService.retrieveFromDatabaseOrGenerateTaxCode(people);
     }
 
     @GetMapping("/decodeTaxCode/{taxCode}")

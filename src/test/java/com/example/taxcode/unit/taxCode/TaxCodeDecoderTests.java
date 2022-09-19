@@ -8,7 +8,7 @@ import com.example.taxcode.application.entity.CityEntity;
 import com.example.taxcode.application.exception.CityCodeNotFoundException;
 import com.example.taxcode.application.exception.TaxCodeNotValidException;
 import com.example.taxcode.application.repository.CityRepository;
-import com.example.taxcode.application.repository.PersonRepository;
+import com.example.taxcode.application.repository.PeopleRepository;
 import com.example.taxcode.application.taxcode.decode.TaxCodeDateBirthDecoder;
 import com.example.taxcode.application.taxcode.decode.impl.TaxCodeDecoderImpl;
 import com.example.taxcode.application.taxcode.utils.TaxCodeValidation;
@@ -34,7 +34,7 @@ class TaxCodeDecoderTests {
     @InjectMocks
     private TaxCodeDecoderImpl taxCodeDecoder;
     @Mock
-    private PersonRepository personRepository;
+    private PeopleRepository peopleRepository;
     @Mock
     private CityRepository cityRepository;
     @Mock
@@ -177,7 +177,7 @@ class TaxCodeDecoderTests {
         var taxCodeString = "RSSMRA85T31A562S";
         var cityCode = "A562";
         var cityName = "ROMA";
-        var gender = Gender.MALE;
+        var gender = Gender.MAN;
         var city = new CityEntity(cityCode, cityName);
         var dateBirthCode = new DateBirthCode("85", "T", "31");
         var birthDate = LocalDate.of(1985, Month.DECEMBER, 31);
@@ -207,8 +207,8 @@ class TaxCodeDecoderTests {
         when(cityRepository.findById(cityCode)).thenReturn(Optional.of(city));
         when(taxCodeDateBirthDecoder.decodeDateOfBirth(dateBirthCode)).thenReturn(birthDate);
         when(taxCodeDateBirthDecoder.decodeGender(dateBirthCode)).thenReturn(gender);
-        when(personRepository.findDistinctSurnames(taxCode.getSurnameCode())).thenReturn(surname);
-        when(personRepository.findDistinctNames(taxCode.getNameCode(),gender)).thenReturn(name);
+        when(peopleRepository.findDistinctSurnames(taxCode.getSurnameCode())).thenReturn(surname);
+        when(peopleRepository.findDistinctNames(taxCode.getNameCode(),gender)).thenReturn(name);
 
         var returnTaxCodeDecoded = taxCodeDecoder.decodeTaxCode(taxCodeString);
 

@@ -2,7 +2,7 @@ package com.example.taxcode.functional;
 
 import com.example.taxcode.application.TaxCodeApplication;
 import com.example.taxcode.application.factory.dto.Gender;
-import com.example.taxcode.application.dto.Person;
+import com.example.taxcode.application.dto.People;
 import com.example.taxcode.application.factory.dto.TaxCodeDecode;
 import com.example.taxcode.application.dto.TaxCodeResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,13 +33,13 @@ class FunctionalTests {
     private ObjectMapper objectMapper;
 
     @SneakyThrows
-    @ParameterizedTest(name = "{index} => person={0}, taxCode={1}")
-    @MethodSource("com.example.taxcode.functional.stream.FunctionalStreamData#validPerson")
+    @ParameterizedTest(name = "{index} => people={0}, taxCode={1}")
+    @MethodSource("com.example.taxcode.functional.stream.FunctionalStreamData#validPeople")
     @DisplayName("Calculate tax code")
-    void calculateTaxCode(Person person, TaxCodeResponse taxCode){
+    void calculateTaxCode(People people, TaxCodeResponse taxCode){
         var response = mockMvc.perform(post("/calculateTaxCode")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(person)))
+                .content(objectMapper.writeValueAsString(people)))
                 .andReturn()
                 .getResponse();
 
@@ -49,12 +49,12 @@ class FunctionalTests {
 
     @SneakyThrows
     @ParameterizedTest
-    @MethodSource("com.example.taxcode.functional.stream.FunctionalStreamData#invalidPerson")
+    @MethodSource("com.example.taxcode.functional.stream.FunctionalStreamData#invalidPeople")
     @DisplayName("Calculate tax code with invalid payload")
-    void calculateTaxCodeBadRequest(Person person){
+    void calculateTaxCodeBadRequest(People people){
         var response = mockMvc.perform(post("/calculateTaxCode")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(person)))
+                        .content(objectMapper.writeValueAsString(people)))
                 .andReturn()
                 .getResponse();
 
@@ -65,12 +65,12 @@ class FunctionalTests {
     @Test
     @DisplayName("Calculate tax code exception due to no city not found exception")
     void calculateTaxCodeBadRequest(){
-        var person = new Person("Mario","Rossi", Gender.MALE,"Firenze",
+        var people = new People("Mario","Rossi", Gender.MAN,"Firenze",
                 LocalDate.of(1990, Month.JULY,12));
 
         var response = mockMvc.perform(post("/calculateTaxCode")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(person)))
+                        .content(objectMapper.writeValueAsString(people)))
                 .andReturn()
                 .getResponse();
 

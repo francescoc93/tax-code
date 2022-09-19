@@ -2,7 +2,7 @@ package com.example.taxcode.unit.controller;
 
 import com.example.taxcode.application.controller.TaxCodeController;
 import com.example.taxcode.application.factory.dto.Gender;
-import com.example.taxcode.application.dto.Person;
+import com.example.taxcode.application.dto.People;
 import com.example.taxcode.application.factory.dto.TaxCodeDecode;
 import com.example.taxcode.application.dto.TaxCodeResponse;
 import com.example.taxcode.application.service.DecodeTaxCodeService;
@@ -16,7 +16,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -44,7 +43,7 @@ class TaxCodeControllerTests {
     @DisplayName("Generate tax code successfully")
     void generateTaxCodeSuccessfully() {
         var taxCodeResponse = new TaxCodeResponse("RSSMRA85B02A562S");
-        var person = new Person("Mario", "Rossi", Gender.MALE, "Roma", LocalDate.of(1980, Month.FEBRUARY, 2));
+        var person = new People("Mario", "Rossi", Gender.MAN, "Roma", LocalDate.of(1980, Month.FEBRUARY, 2));
 
         when(generateTaxCodeService.retrieveFromDatabaseOrGenerateTaxCode(person)).thenReturn(taxCodeResponse);
         var taxCodeResponseActual = controller.calculateTaxCode(person);
@@ -56,14 +55,14 @@ class TaxCodeControllerTests {
     @ParameterizedTest(name = "{index} => person={0}, exceptionClass={1}")
     @MethodSource("com.example.taxcode.unit.controller.stream.TaxCodeControllerStreamData#provideInputWithExceptionClass")
     @DisplayName("Generate tax code throw exception")
-    void generateTaxCodeThrowException(Person person, Class exceptionClass) {
-        when(generateTaxCodeService.retrieveFromDatabaseOrGenerateTaxCode(person)).thenThrow(exceptionClass);
+    void generateTaxCodeThrowException(People people, Class exceptionClass) {
+        when(generateTaxCodeService.retrieveFromDatabaseOrGenerateTaxCode(people)).thenThrow(exceptionClass);
 
         assertThatThrownBy(() -> {
-            controller.calculateTaxCode(person);
+            controller.calculateTaxCode(people);
         }).isInstanceOf(exceptionClass);
 
-        verify(generateTaxCodeService, times(1)).retrieveFromDatabaseOrGenerateTaxCode(person);
+        verify(generateTaxCodeService, times(1)).retrieveFromDatabaseOrGenerateTaxCode(people);
     }
 
     @SneakyThrows
@@ -84,7 +83,7 @@ class TaxCodeControllerTests {
                 .surnames(surname)
                 .dateOfBirth(LocalDate.of(1985, Month.FEBRUARY, 2))
                 .placeOfBirth("ROMA")
-                .gender(Gender.MALE)
+                .gender(Gender.MAN)
                 .build();
 
         when(decodeTaxCodeService.decodeTaxCode(taxCodeToDecode)).thenReturn(taxCodeDecode);

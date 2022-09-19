@@ -37,7 +37,7 @@ public class TaxCodeDateBirthGeneratorImpl implements TaxCodeDateBirthGenerator 
     }
 
     private String calculateDayOfBirthCode(LocalDate dateOfBirth, Gender gender) {
-        var dayOfBirth = gender == Gender.MALE ? dateOfBirth.getDayOfMonth() : dateOfBirth.getDayOfMonth() + 40;
+        var dayOfBirth = gender == Gender.MAN ? dateOfBirth.getDayOfMonth() : dateOfBirth.getDayOfMonth() + 40;
         return String.format("%02d", dayOfBirth);
     }
 

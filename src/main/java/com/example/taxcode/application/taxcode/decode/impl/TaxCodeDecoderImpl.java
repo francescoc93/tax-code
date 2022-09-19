@@ -6,7 +6,7 @@ import com.example.taxcode.application.factory.dto.TaxCodeDecode;
 import com.example.taxcode.application.exception.CityCodeNotFoundException;
 import com.example.taxcode.application.exception.TaxCodeNotValidException;
 import com.example.taxcode.application.repository.CityRepository;
-import com.example.taxcode.application.repository.PersonRepository;
+import com.example.taxcode.application.repository.PeopleRepository;
 import com.example.taxcode.application.taxcode.decode.TaxCodeDateBirthDecoder;
 import com.example.taxcode.application.taxcode.decode.TaxCodeDecoder;
 import com.example.taxcode.application.taxcode.utils.TaxCodeValidation;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TaxCodeDecoderImpl implements TaxCodeDecoder {
     private final TaxCodeValidation taxCodeValidation;
-    private final PersonRepository personRepository;
+    private final PeopleRepository peopleRepository;
     private final CityRepository cityRepository;
     private final TaxCodeDateBirthDecoder taxCodeDateBirthDecoder;
 
@@ -42,11 +42,11 @@ public class TaxCodeDecoderImpl implements TaxCodeDecoder {
 
 
     private List<String> retrieveListOfPossibleSurnames(String surnameCode) {
-        return personRepository.findDistinctSurnames(surnameCode.toUpperCase());
+        return peopleRepository.findDistinctSurnames(surnameCode.toUpperCase());
     }
 
     private List<String> retrieveListOfPossibleNames(String nameCode, Gender gender) {
-        return personRepository.findDistinctNames(nameCode.toUpperCase(), gender);
+        return peopleRepository.findDistinctNames(nameCode.toUpperCase(), gender);
     }
 
     private String decodePlaceOfBirth(String cityCode) {

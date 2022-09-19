@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Person {
+public class People {
     @NotBlank
     private String name;
     @NotBlank

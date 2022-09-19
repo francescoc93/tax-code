@@ -41,9 +41,9 @@ public class TaxCodeDateBirthDecoderImpl implements TaxCodeDateBirthDecoder {
         var dayBirth = Integer.parseInt(dateBirthCode.getDayOfBirthCode());
 
         if (dayBirth >= MALE_FIRST_DAY_MONTH && dayBirth <= MALE_LAST_DAY_MONTH) {
-            return Gender.MALE;
+            return Gender.MAN;
         } else if (dayBirth >= FEMALE_FIRST_DAY_MONTH && dayBirth <= FEMALE_LAST_DAY_MONTH) {
-            return Gender.FEMALE;
+            return Gender.WOMAN;
         }
 
         throw new IllegalArgumentException("The dateBirthCode provided is not valid. Day of birth: '"

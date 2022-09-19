@@ -1,7 +1,7 @@
 package com.example.taxcode.application.taxcode.generator.impl;
 
 import com.example.taxcode.application.factory.TaxCodeFactory;
-import com.example.taxcode.application.dto.Person;
+import com.example.taxcode.application.dto.People;
 import com.example.taxcode.application.factory.dto.TaxCode;
 import com.example.taxcode.application.taxcode.generator.TaxCodeCityCodeGenerator;
 import com.example.taxcode.application.taxcode.generator.TaxCodeDateBirthGenerator;
@@ -22,23 +22,23 @@ public class TaxCodeGeneratorImpl implements TaxCodeGenerator {
     private final TaxCodeCityCodeGenerator taxCodeCityCodeGenerator;
 
     @Override
-    public TaxCode generateTaxCode(Person person) {
-        if (!validate(person)) {
+    public TaxCode generateTaxCode(People people) {
+        if (!validate(people)) {
             throw new IllegalArgumentException("person is null or it contains some null values");
         }
 
-        var cityCode = taxCodeCityCodeGenerator.calculateCityCode(person.getPlaceOfBirth());
-        var surnameCode = taxCodeNameSurnameGenerator.calculateSurnameCode(person.getSurname());
-        var nameCode = taxCodeNameSurnameGenerator.calculateNameCode(person.getName());
-        var dateOfBirthCode = taxCodeDateBirthGenerator.calculateDateOfBirthCode(person.getDateOfBirth(), person.getGender());
+        var cityCode = taxCodeCityCodeGenerator.calculateCityCode(people.getPlaceOfBirth());
+        var surnameCode = taxCodeNameSurnameGenerator.calculateSurnameCode(people.getSurname());
+        var nameCode = taxCodeNameSurnameGenerator.calculateNameCode(people.getName());
+        var dateOfBirthCode = taxCodeDateBirthGenerator.calculateDateOfBirthCode(people.getDateOfBirth(), people.getGender());
         var validationCode = taxCodeValidation.generateValidationCharacter(surnameCode, nameCode, dateOfBirthCode.toString(), cityCode);
 
         return TaxCodeFactory.makeTaxCode(surnameCode, nameCode, dateOfBirthCode, cityCode, validationCode);
     }
 
-    private boolean validate(Person person) {
-        return person != null && person.getName() != null && person.getSurname() != null && person.getGender() != null
-                && person.getPlaceOfBirth() != null && person.getDateOfBirth() != null;
+    private boolean validate(People people) {
+        return people != null && people.getName() != null && people.getSurname() != null && people.getGender() != null
+                && people.getPlaceOfBirth() != null && people.getDateOfBirth() != null;
     }
 
 }

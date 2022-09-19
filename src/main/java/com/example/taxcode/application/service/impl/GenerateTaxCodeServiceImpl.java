@@ -1,11 +1,11 @@
 package com.example.taxcode.application.service.impl;
 
-import com.example.taxcode.application.dto.Person;
+import com.example.taxcode.application.dto.People;
 import com.example.taxcode.application.factory.TaxCodeFactory;
 import com.example.taxcode.application.factory.dto.TaxCode;
 import com.example.taxcode.application.dto.TaxCodeResponse;
-import com.example.taxcode.application.entity.PersonEntity;
-import com.example.taxcode.application.repository.PersonRepository;
+import com.example.taxcode.application.entity.PeopleEntity;
+import com.example.taxcode.application.repository.PeopleRepository;
 import com.example.taxcode.application.service.GenerateTaxCodeService;
 import com.example.taxcode.application.taxcode.generator.TaxCodeGenerator;
 import com.example.taxcode.application.utils.StringUtils;
@@ -18,66 +18,66 @@ import java.util.Optional;
 @Service
 public class GenerateTaxCodeServiceImpl implements GenerateTaxCodeService {
     private final TaxCodeGenerator taxCodeGenerator;
-    private final PersonRepository personRepository;
+    private final PeopleRepository peopleRepository;
 
     @Override
-    public TaxCodeResponse retrieveFromDatabaseOrGenerateTaxCode(Person person){
-        var personNormalized = normalizePersonData(person);
-        return findTaxCodeOnRepository(personNormalized).map(taxCode -> new TaxCodeResponse(taxCode.toString()))
-                .orElseGet(() -> generateAndSaveTaxCode(personNormalized));
+    public TaxCodeResponse retrieveFromDatabaseOrGenerateTaxCode(People people){
+        var peopleNormalized = normalizePeopleData(people);
+        return findTaxCodeOnRepository(peopleNormalized).map(taxCode -> new TaxCodeResponse(taxCode.toString()))
+                .orElseGet(() -> generateAndSaveTaxCode(peopleNormalized));
     }
 
-    private TaxCodeResponse generateAndSaveTaxCode(Person personNormalized) {
-        TaxCode taxCode = taxCodeGenerator.generateTaxCode(personNormalized);
-        savePersonAndTaxCode(personNormalized, taxCode);
+    private TaxCodeResponse generateAndSaveTaxCode(People peopleNormalized) {
+        TaxCode taxCode = taxCodeGenerator.generateTaxCode(peopleNormalized);
+        savePeopleAndTaxCode(peopleNormalized, taxCode);
 
         return new TaxCodeResponse(taxCode.toString());
     }
 
-    private Person normalizePersonData(Person person) {
-        var name = StringUtils.normalizeSpace(person.getName()).toUpperCase();
-        var surname = StringUtils.normalizeSpace(person.getSurname()).toUpperCase();
-        var placeOfBirth = StringUtils.normalizeSpace(person.getPlaceOfBirth()).toUpperCase();
+    private People normalizePeopleData(People people) {
+        var name = StringUtils.normalizeSpace(people.getName()).toUpperCase();
+        var surname = StringUtils.normalizeSpace(people.getSurname()).toUpperCase();
+        var placeOfBirth = StringUtils.normalizeSpace(people.getPlaceOfBirth()).toUpperCase();
 
-        return new Person(name, surname, person.getGender(), placeOfBirth, person.getDateOfBirth());
+        return new People(name, surname, people.getGender(), placeOfBirth, people.getDateOfBirth());
     }
 
-    private void savePersonAndTaxCode(Person person, TaxCode taxCode) {
+    private void savePeopleAndTaxCode(People people, TaxCode taxCode) {
 
-        PersonEntity personEntity = PersonEntity.builder()
+        PeopleEntity peopleEntity = PeopleEntity.builder()
                 .nameTaxCode(taxCode.getNameCode())
                 .surnameTaxCode(taxCode.getSurnameCode())
                 .dateOfBirthTaxCode(taxCode.getDateOfBirthCode().toString())
                 .cityTaxCode(taxCode.getCityCode())
                 .validationCharacterTaxCode(taxCode.getValidationCode())
-                .name(person.getName())
-                .surname(person.getSurname())
-                .gender(person.getGender())
-                .placeOfBirth(person.getPlaceOfBirth())
-                .dateOfBirth(person.getDateOfBirth())
+                .name(people.getName())
+                .surname(people.getSurname())
+                .gender(people.getGender())
+                .placeOfBirth(people.getPlaceOfBirth())
+                .dateOfBirth(people.getDateOfBirth())
                 .build();
 
-        personRepository.save(personEntity);
+        peopleRepository.save(peopleEntity);
     }
 
 
-    private Optional<TaxCode> findTaxCodeOnRepository(Person person) {
-        var personOptional = personRepository.findTaxCodeByPersonInformation(
-                person.getName(),
-                person.getSurname(),
-                person.getGender(),
-                person.getPlaceOfBirth(),
-                person.getDateOfBirth());
+    private Optional<TaxCode> findTaxCodeOnRepository(People people) {
+        var peopleOptional = peopleRepository.findTaxCodeByPeopleInformation(
+                people.getName(),
+                people.getSurname(),
+                people.getGender(),
+                people.getPlaceOfBirth(),
+                people.getDateOfBirth());
 
-        return personOptional.map(this::buildTaxCodeFromPersonEntity);
+        return peopleOptional.map(this::buildTaxCodeFromPeopleEntity);
     }
 
-    private TaxCode buildTaxCodeFromPersonEntity(PersonEntity person) {
-        var dateBirthTaxCode = person.getDateOfBirthTaxCode();
-        var surnameTaxCode = person.getSurnameTaxCode();
-        var nameTaxCode = person.getNameTaxCode();
-        var cityTaxCode = person.getCityTaxCode();
-        var validationCharacterTaxCode = person.getValidationCharacterTaxCode();
+    private TaxCode buildTaxCodeFromPeopleEntity(PeopleEntity people) {
+        var dateBirthTaxCode = people.getDateOfBirthTaxCode();
+        var surnameTaxCode = people.getSurnameTaxCode();
+        var nameTaxCode = people.getNameTaxCode();
+        var cityTaxCode = people.getCityTaxCode();
+        var validationCharacterTaxCode = people.getValidationCharacterTaxCode();
 
         return TaxCodeFactory.makeTaxCode(surnameTaxCode, nameTaxCode, dateBirthTaxCode, cityTaxCode, validationCharacterTaxCode);
     }

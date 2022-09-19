@@ -1,7 +1,7 @@
 package com.example.taxcode.unit.controller.stream;
 
 import com.example.taxcode.application.factory.dto.Gender;
-import com.example.taxcode.application.dto.Person;
+import com.example.taxcode.application.dto.People;
 import com.example.taxcode.application.exception.CityCodeNotFoundException;
 import com.example.taxcode.application.exception.TaxCodeNotValidException;
 import org.junit.jupiter.params.provider.Arguments;
@@ -14,10 +14,10 @@ import java.util.stream.Stream;
 public class TaxCodeControllerStreamData {
 
     private static Stream<Arguments> provideInputWithExceptionClass(){
-        var person = new Person("", "", Gender.MALE, "Roma",
+        var person = new People("", "", Gender.MAN, "Roma",
                 LocalDate.of(1980, Month.FEBRUARY, 2));
 
-        var person2 = new Person("Mario", "Rossi", Gender.MALE, "Roma",
+        var person2 = new People("Mario", "Rossi", Gender.MAN, "Roma",
                 LocalDate.of(1980, Month.FEBRUARY, 2));
         return Stream.of(Arguments.of(person,IllegalArgumentException.class),
                 Arguments.of(person2, CityCodeNotFoundException.class));

@@ -49,7 +49,7 @@ class DecodeTaxCodeServiceTests {
 
         var taxCodeDecode = TaxCodeDecode.builder()
                 .placeOfBirth("ROMA")
-                .gender(Gender.MALE)
+                .gender(Gender.MAN)
                 .dateOfBirth(LocalDate.of(1985, Month.FEBRUARY,2))
                 .names(name)
                 .surnames(surname)

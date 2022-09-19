@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @NoArgsConstructor
 @Data
-public class PersonPK implements Serializable {
+public class PeoplePK implements Serializable {
     private String nameTaxCode;
     private String surnameTaxCode;
     private String dateOfBirthTaxCode;
